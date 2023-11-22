@@ -61,4 +61,6 @@
   font-family: Titillium Web;
   color: white;
   font-size: 60px;
+  position:relative; 
+  right:170px;
 }

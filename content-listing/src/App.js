@@ -2,32 +2,48 @@ import './App.css';
 import Header from './content/Header';
 import List from './content/List';
 import { useEffect, useState } from 'react';
-import { connect, useDispatch, useSelector } from 'react-redux';
-import getData from './redux.js/slice/movieData';
+import axios from 'axios';
+// import {useDispatch, useSelector } from 'react-redux';
+// import getData from './redux/slice/movieData';
 
 function App() {
-  const [loader, setLoader] = useState("");
+  // const [loader, setLoader] = useState("");
   const [dataList, setDataList] = useState([]);
+  const [title, setTitle] = useState("");
 
+  const getMovieData = (data) => {
+    if (data && data.page && data.page['content-items'] && data.page['content-items']['content']) {
+            return data.page['content-items']['content'];
+        }
+        return [];
+  }
 
-  const dispatch = useDispatch();
-  const state = useSelector((state) => state);
-  // const dataLists = useSelector((state) => state.diagnalData.data);
-  // const isLoading = useSelector((state) => state.diagnalData.isLoading);
+  const getTitle = (data) => {
+    return data && data.page && data.page.title;
+  }
 
-  console.log("State", state);
+  // const dispatch = useDispatch();
+  // const state = useSelector((state) => state);
+  // const dataLists = useSelector((state) => state..data);
+  // setDataList(dataLists);
+  // const isLoading = useSelector((state) => state.isLoading);
+  // const title = useSelector((state) => state.title);
 
   useEffect(() => {
-    dispatch(getData());
+    // dispatch(getData());
     // setDataList(dataLists);
     // setLoader(isLoading);
+    axios.get('https://test.create.diagnal.com/data/page1.json')
+    .then((response) => {
+      setDataList(getMovieData(response.data));
+      setTitle(getTitle(response.data));
+    })
 }, []);
 
   // if (loader) {
   //   setLoader(true);
   // }
 
-  const title = dataList && dataList.page && dataList.page.title;
 
   const handleSearch = (inputValue) => {
     const filteredValues = dataList && dataList.filter((item) =>
@@ -38,7 +54,7 @@ function App() {
 
   return (
     <div className="container">
-      {loader && <p>Loading...</p>} ;
+      {/* {isLoading && <p>Loading...</p>} ; */}
       <Header
         title={title}
         dataList={dataList}
@@ -49,10 +65,10 @@ function App() {
   );
 }
 
-const mapStateToProps = (state) => ({
-  data: state.data,
-  loading: state.loading,
-  error: state.error,
-});
+// const mapStateToProps = (state) => ({
+//   data: state.data,
+//   loading: state.loading,
+//   error: state.error,
+// });
 
-export default connect(mapStateToProps)(App);
+export default App;
